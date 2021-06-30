@@ -56,9 +56,10 @@ if difference_percentage >1:
 
     ## STEP 3: Use twilio.com/docs/sms/quickstart/python
     #to send a separate message with each article's title and description to your phone number.
+    # Create a new list of the first 3 article's headline and description using list comprehension.
+    formatted_news=[f"Headline: {articles['title']}.\n Brief:{articles['description']}" for articles in three_first_articles]
+    print(formatted_news)
 
-
-#TODO 8. - Create a new list of the first 3 article's headline and description using list comprehension.
 
 #TODO 9. - Send each article as a separate message via Twilio. 
 
