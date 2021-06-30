@@ -1,4 +1,5 @@
 import requests
+from twilio.rest import Client
 
 STOCK_NAME = "TSLA"
 COMPANY_NAME = "Tesla Inc"
@@ -6,6 +7,9 @@ COMPANY_NAME = "Tesla Inc"
 
 STOCK_ENDPOINT = "https://www.alphavantage.co/query"
 STOCK_API_KEY="HPX1BO9B6TO3DVOX"
+
+TWILIO_SID ="AC60595cef50f52688c7bdec2112342600"
+TWILIO_API_KEY="c9d059b0b7d9886029ea17a1905b49ef"
 
 NEWS_ENDPOINT = "https://newsapi.org/v2/everything"
 NEWS_API_KEY="cd75e5e2ea4c4117b2d29ea19c6a2ce1"
@@ -33,15 +37,20 @@ day_before_yesterday_closing_price= day_before_yestarday["4. close"]
 print(day_before_yesterday_closing_price)
 #Find the positive difference between 1 and 2. e.g. 40 - 20 = -20, but the positive difference is 20. Hint: https://www.w3schools.com/python/ref_func_abs.asp
 difference = abs(float(yesterday_closing_price) - float(day_before_yesterday_closing_price))
+up_down = None
+if difference >0:
+    up_down= "up"
+else:
+    up_down="dowm"
 print(difference)
 #Work out the percentage difference in price between closing price yesterday and closing price the day before yesterday.
-difference_percentage = (difference/float(yesterday_closing_price))*100
+difference_percentage = round((difference/float(yesterday_closing_price))*100)
 print(difference_percentage)
 #If TODO4 percentage is greater than 5 then print("Get News").
 # Instead of printing ("Get News"), actually get the first 3 news pieces for the COMPANY_NAME.
 ## STEP 2: https://newsapi.org/
 
-if difference_percentage >1:
+if abs(difference_percentage) >1:
     news_params={
         "apiKey":NEWS_API_KEY,
         "qInTitle":COMPANY_NAME,
@@ -57,15 +66,20 @@ if difference_percentage >1:
     ## STEP 3: Use twilio.com/docs/sms/quickstart/python
     #to send a separate message with each article's title and description to your phone number.
     # Create a new list of the first 3 article's headline and description using list comprehension.
-    formatted_news=[f"Headline: {articles['title']}.\n Brief:{articles['description']}" for articles in three_first_articles]
+    formatted_news=[f"{STOCK_NAME} : {up_down}{difference_percentage}Headline: {articles['title']}.\n Brief:{articles['description']}" for articles in three_first_articles]
     print(formatted_news)
+#Send each article as a separate message via Twilio.
+    client = Client(TWILIO_SID,TWILIO_API_KEY)
 
 
-#TODO 9. - Send each article as a separate message via Twilio. 
+#Format the message like this:
+    for article in formatted_news:
+        message= client.messages.create(
+            body=article,
+            from_="+15392860952",
+            to="Your verified Number "
 
-
-
-#Optional TODO: Format the message like this: 
+        )
 """
 TSLA: 🔺2%
 Headline: Were Hedge Funds Right About Piling Into Tesla Inc. (TSLA)?. 
