@@ -8,6 +8,7 @@ STOCK_ENDPOINT = "https://www.alphavantage.co/query"
 STOCK_API_KEY="HPX1BO9B6TO3DVOX"
 
 NEWS_ENDPOINT = "https://newsapi.org/v2/everything"
+NEWS_API_KEY="cd75e5e2ea4c4117b2d29ea19c6a2ce1"
 
     ## STEP 1: Use https://www.alphavantage.co/documentation/#daily
 # When stock price increase/decreases by 5% between yesterday and the day before yesterday then print("Get News").
@@ -37,18 +38,25 @@ print(difference)
 difference_percentage = (difference/float(yesterday_closing_price))*100
 print(difference_percentage)
 #If TODO4 percentage is greater than 5 then print("Get News").
-if difference_percentage >5:
-    print("Get News")
-    ## STEP 2: https://newsapi.org/ 
-    # Instead of printing ("Get News"), actually get the first 3 news pieces for the COMPANY_NAME. 
+# Instead of printing ("Get News"), actually get the first 3 news pieces for the COMPANY_NAME.
+## STEP 2: https://newsapi.org/
 
-#TODO 6. - Instead of printing ("Get News"), use the News API to get articles related to the COMPANY_NAME.
+if difference_percentage >1:
+    news_params={
+        "apiKey":NEWS_API_KEY,
+        "qInTitle":COMPANY_NAME,
+    }
+    news_response=requests.get(NEWS_ENDPOINT,params=news_params)
+    articles = news_response.json()["articles"]
 
-#TODO 7. - Use Python slice operator to create a list that contains the first 3 articles. Hint: https://stackoverflow.com/questions/509211/understanding-slice-notation
 
+# Use Python slice operator to create a list that contains the first 3 articles. Hint: https://stackoverflow.com/questions/509211/understanding-slice-notation
+    three_first_articles = articles[:3]
+    print(three_first_articles)
 
     ## STEP 3: Use twilio.com/docs/sms/quickstart/python
-    #to send a separate message with each article's title and description to your phone number. 
+    #to send a separate message with each article's title and description to your phone number.
+
 
 #TODO 8. - Create a new list of the first 3 article's headline and description using list comprehension.
 
